@@ -91,7 +91,7 @@ class _SignUpScreenState extends State<SignUpPage> {
                       autofocus: true,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
-                        labelText: "Email",
+                        labelText: "E-mail",
                         labelStyle: TextStyle(
                           color: Colors.white,
                         ),
