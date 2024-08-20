@@ -1,7 +1,6 @@
 import 'package:carteira/documento/providers/documentos_notifier.dart';
 import 'package:carteira/documento/views/add_page.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'view_page.dart';
@@ -46,7 +45,8 @@ class HomePage extends ConsumerWidget {
                             return Container(
                               height: 40,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   TextButton(
                                     child: Text(
@@ -76,10 +76,13 @@ class HomePage extends ConsumerWidget {
                                       TextButton(
                                         onPressed: () {
                                           ref
-                                              .read(documentosNotifierProvider.notifier)
-                                              .removeDoc(listaDocumentos[index]);
+                                              .read(documentosNotifierProvider
+                                                  .notifier)
+                                              .removeDoc(
+                                                  listaDocumentos[index]);
                                         },
-                                        child: const Icon(Icons.delete, size: 20),
+                                        child:
+                                            const Icon(Icons.delete, size: 20),
                                       ),
                                     ],
                                   ),
@@ -88,7 +91,8 @@ class HomePage extends ConsumerWidget {
                             );
                           },
                         )
-                      : Center(child: const Text('Nenhum documento adicionado')),
+                      : Center(
+                          child: const Text('Nenhum documento adicionado')),
                 ),
               ),
               const SizedBox(height: 20),
