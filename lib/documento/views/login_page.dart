@@ -20,6 +20,7 @@ class _LoginScreenState extends State<LoginPage> {
   final TextEditingController _mailInputController = TextEditingController();
   final TextEditingController _passwordInputController =
       TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   bool showPassword = false;
   @override
@@ -66,6 +67,7 @@ class _LoginScreenState extends State<LoginPage> {
                 padding: EdgeInsets.only(bottom: 10),
               ),
               Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
@@ -90,6 +92,12 @@ class _LoginScreenState extends State<LoginPage> {
                               borderSide: BorderSide(
                             color: Colors.white,
                           ))),
+                      validator: (mail) {
+                        if (mail == null || mail.isEmpty) {
+                          return "Digite o seu e-mail";
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       controller: _passwordInputController,
@@ -110,6 +118,12 @@ class _LoginScreenState extends State<LoginPage> {
                           ),
                         ),
                       ),
+                      validator: (senha) {
+                        if (senha == null || senha.isEmpty) {
+                          return "Digite a sua senha";
+                        }
+                        return null;
+                      },
                     ),
                   ],
                 ),
@@ -135,16 +149,18 @@ class _LoginScreenState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: TextButton(
+                child: ElevatedButton(
                   onPressed: () {
-                    _doLogin();
+                    if (_formKey.currentState!.validate()) {
+                      _doLogin();
+                    }
                   },
                   child: const Text("Login"),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: TextButton(
+                child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -165,21 +181,49 @@ class _LoginScreenState extends State<LoginPage> {
     String mailForm = _mailInputController.text;
     String passwordForm = _passwordInputController.text;
 
-    _getSavedUser(mailForm, passwordForm);
-  }
-
-  Future<void> _getSavedUser(mailForm, passwordForm) async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonUser = prefs.getString("LOGGIN_USER_INFOS") ?? {};
-    log(jsonUser.toString());
-    Map<String, dynamic> mapUser = json.decode(jsonUser.toString());
-    User user = User.fromJson(mapUser);
+    User user = await _getSavedUser(mailForm, passwordForm);
     if (mailForm == user.mail && passwordForm == user.password) {
       log("LOGIN EFETUADO COM SUCESSO.");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
       log("FALHA NO LOGIN.");
+
+      showAlertDialog1(BuildContext context) {
+        // configura o button
+        Widget okButton = TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        );
+        // configura o  AlertDialog
+        AlertDialog alerta = AlertDialog(
+          title: Text("Falha no Login"),
+          content: Text("Usuário inválido! Verifique a senha e o e-mail."),
+          actions: [
+            okButton,
+          ],
+        );
+        // exibe o dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alerta;
+          },
+        );
+      }
+
+      showAlertDialog1(context);
     }
+  }
+
+  Future<User> _getSavedUser(mailForm, passwordForm) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonUser = prefs.getString("LOGGIN_USER_INFOS") ?? {};
+    log(jsonUser.toString());
+    Map<String, dynamic> mapUser = json.decode(jsonUser.toString());
+    User user = User.fromJson(mapUser);
+    return user;
   }
 }

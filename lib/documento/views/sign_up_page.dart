@@ -1,5 +1,7 @@
 import "dart:convert";
+import "dart:developer";
 
+import "package:carteira/documento/views/login_page.dart";
 import "package:flutter/material.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -18,6 +20,7 @@ class _SignUpScreenState extends State<SignUpPage> {
   final TextEditingController _mailInputController = TextEditingController();
   final TextEditingController _passwordInputController =
       TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   bool showPassword = false;
   @override
@@ -64,6 +67,7 @@ class _SignUpScreenState extends State<SignUpPage> {
                 padding: EdgeInsets.only(bottom: 10),
               ),
               Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
@@ -85,6 +89,12 @@ class _SignUpScreenState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                      validator: (nome) {
+                        if (nome == null || nome.isEmpty) {
+                          return "Digite o seu nome";
+                        }
+                        return null;
+                      },
                     ),
                     TextFormField(
                       controller: _mailInputController,
@@ -105,6 +115,12 @@ class _SignUpScreenState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                      validator: (mail) {
+                        if (mail == null || mail.isEmpty) {
+                          return "Digite o seu e-mail";
+                        }
+                        return null;
+                      },
                     ),
                     const Padding(
                         padding: EdgeInsets.only(
@@ -129,6 +145,12 @@ class _SignUpScreenState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                      validator: (senha) {
+                        if (senha == null || senha.isEmpty) {
+                          return "Digite a sua senha";
+                        }
+                        return null;
+                      },
                     ),
                     Row(
                       children: [
@@ -152,10 +174,11 @@ class _SignUpScreenState extends State<SignUpPage> {
                   ],
                 ),
               ),
-              TextButton(
+              ElevatedButton(
                 onPressed: () {
-                  _doSignUp();
-                  Navigator.pop(context);
+                  if (_formKey.currentState!.validate()) {
+                    _doSignUp();
+                  }
                 },
                 child: const Text("Cadastrar"),
               )
@@ -176,8 +199,43 @@ class _SignUpScreenState extends State<SignUpPage> {
     _saveUser(newUser);
   }
 
-  void _saveUser(User user) async {
+  void _saveUser(User newUser) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("LOGGIN_USER_INFOS", jsonEncode(user.toJson()));
+    final user = prefs.getString("LOGGIN_USER_INFOS") ?? {};
+    log(user.toString());
+    if (user.toString() == "{}") {
+      prefs.setString("LOGGIN_USER_INFOS", jsonEncode(newUser.toJson()));
+      Navigator.pop(context);
+    } else {
+      showAlertDialog1(BuildContext context) {
+        // configura o button
+        Widget okButton = TextButton(
+          child: Text("OK"),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+            );
+          },
+        );
+        // configura o  AlertDialog
+        AlertDialog alerta = AlertDialog(
+          title: Text("Falha no Cadastro"),
+          content: Text("O sistema já possui um usuário cadastrado."),
+          actions: [
+            okButton,
+          ],
+        );
+        // exibe o dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return alerta;
+          },
+        );
+      }
+
+      showAlertDialog1(context);
+    }
   }
 }
