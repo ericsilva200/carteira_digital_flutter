@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:carteira/documento/providers/documentos_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker_web/image_picker_web.dart';
-
+import 'package:image_picker/image_picker.dart';
 import '../models/documento.dart';
 
 class AddPage extends ConsumerStatefulWidget {
@@ -16,8 +15,12 @@ class AddPage extends ConsumerStatefulWidget {
 }
 
 class _AddPageState extends ConsumerState<AddPage> {
-  late Uint8List imageFile;
-  String? imageBase64;
+
+  final ImagePicker _picker = ImagePicker();
+  Uint8List webImage = Uint8List(8);
+  File? selected;
+  // ignore: unused_field
+  File? _pickedImage;
 
   bool imageAvailable = false;
   bool textoValido = false;
@@ -42,7 +45,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                   ? SizedBox(
                       width: 500,
                       height: 300,
-                      child: Image.memory(imageFile),
+                      child: Image.memory(webImage),
                     )
                   : const SizedBox(),
               const SizedBox(height: 20),
@@ -76,12 +79,15 @@ class _AddPageState extends ConsumerState<AddPage> {
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () async {
-                  final image = await ImagePickerWeb.getImageAsBytes();
-                  imageBase64 = base64Encode(image!);
-                  setState(() {
-                    imageFile = image;
-                    imageAvailable = true;
-                  });
+                  XFile? img = await _picker.pickImage(source: ImageSource.gallery);
+                  if (img != null) {
+                    var f = await img.readAsBytes();
+                    setState(() {
+                      webImage = f;
+                      _pickedImage = File('a');
+                      imageAvailable = true;
+                    });
+                  }
                 },
                 child: MouseRegion(
                   cursor: SystemMouseCursors.click,
@@ -114,7 +120,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                         ref.read(documentosNotifierProvider.notifier).addDoc(
                               Documento(
                                 titulo: tituloController.text,
-                                imagem: imageBase64!,
+                                imagem: base64Encode(webImage),
                               ),
                             );
                         Navigator.pop(context);
