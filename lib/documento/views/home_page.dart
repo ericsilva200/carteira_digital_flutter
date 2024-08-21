@@ -1,5 +1,6 @@
 import 'package:carteira/documento/providers/documentos_notifier.dart';
 import 'package:carteira/documento/views/add_page.dart';
+import 'package:carteira/documento/views/edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,12 +17,10 @@ class HomePage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text(
           'Carteira Digital',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
         ),
         backgroundColor: Colors.deepPurple[400],
         foregroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         centerTitle: true,
       ),
       body: Center(
@@ -67,12 +66,19 @@ class HomePage extends ConsumerWidget {
                                   ),
                                   Row(
                                     children: [
-                                      // TextButton(
-                                      //   onPressed: () {
-                                      //     //
-                                      //   },
-                                      //   child: const Icon(Icons.edit, size: 20),
-                                      // ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => EditPage(
+                                                documento: listaDocumentos[index],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: const Icon(Icons.edit, size: 20),
+                                      ),
                                       TextButton(
                                         onPressed: () {
                                           ref

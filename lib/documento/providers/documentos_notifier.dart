@@ -5,13 +5,10 @@ part 'documentos_notifier.g.dart';
 
 @riverpod
 class DocumentosNotifier extends _$DocumentosNotifier {
-
   //initial value
   @override
   List<Documento> build() {
-    return [
-      
-    ];
+    return [];
   }
 
   //methods to update state
@@ -19,10 +16,12 @@ class DocumentosNotifier extends _$DocumentosNotifier {
     state = [...state, documento];
   }
 
-  Future <void> removeDoc(Documento documento) async {
+  Future<void> removeDoc(Documento documento) async {
     state = state.where((element) => element != documento).toList();
   }
 
+  Future <void> updateDoc(Documento documento, Documento novoDocumento) async {
+    state = state.map((element) => element == documento ? novoDocumento : element).toList();
+  }
+
 }
-
-

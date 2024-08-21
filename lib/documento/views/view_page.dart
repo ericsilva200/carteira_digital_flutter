@@ -26,21 +26,21 @@ class ViewPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 20),
+              Text(
+                documento.titulo,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple[400],
+                ),
+              ),
+              const SizedBox(height: 20),
               Container(
                 child: Image.memory(base64Decode(documento.imagem)),
                 constraints: const BoxConstraints(
                   maxHeight: 450,
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                documento.titulo,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple[400],
-                ),
-              ),
+              ),             
             ],
           ),
         ),
