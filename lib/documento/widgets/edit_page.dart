@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'dart:typed_data';
 import 'dart:io';
-import 'package:carteira/documento/providers/documentos_notifier.dart';
+import 'package:carteira/documento/controller/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/documento.dart';
+
+import '../model/domain.dart';
+
 
 class EditPage extends ConsumerStatefulWidget {
   final Documento documento;
@@ -148,18 +150,23 @@ class _EditPageState extends ConsumerState<EditPage> {
                   foregroundColor: Colors.white,
                 ),
                 onPressed: (novaImagem && textoValido) || (novoTitulo && textoValido) 
-                    ? () {
-                        ref.read(documentosNotifierProvider.notifier).updateDoc(
+                    ? () async {
+                        bool result = await ref.read(documentoListControllerProvider.notifier).editDocumento(
                               widget.documento,
-                              Documento(
-                                titulo: novoTitulo
+                              novoTitulo
                                     ? tituloController.text
                                     : widget.documento.titulo,
-                                imagem: novaImagem
+                                novaImagem
                                     ? base64Encode(webImage)
                                     : widget.documento.imagem,
-                              ),
                             );
+                        if (!result) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Documento não alterado, pois já existe outro com o mesmo nome.'),
+                            ),
+                          );
+                        }
                         Navigator.pop(context);
                       }
                     : null,

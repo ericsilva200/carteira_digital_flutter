@@ -1,22 +1,22 @@
 import "dart:convert";
 import "dart:developer";
 
-import "package:carteira/documento/views/login_page.dart";
+import "package:carteira/documento/widgets/home_page.dart";
 import "package:flutter/material.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
-import "../models/user_model.dart";
+import '../model/user_model.dart';
+import "sign_up_page.dart";
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpPage> {
-  final TextEditingController _nameInputController = TextEditingController();
+class _LoginScreenState extends State<LoginPage> {
   final TextEditingController _mailInputController = TextEditingController();
   final TextEditingController _passwordInputController =
       TextEditingController();
@@ -56,7 +56,7 @@ class _SignUpScreenState extends State<SignUpPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
-                "Cadastro",
+                "Entrar",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
@@ -71,50 +71,27 @@ class _SignUpScreenState extends State<SignUpPage> {
                 child: Column(
                   children: [
                     TextFormField(
-                      controller: _nameInputController,
-                      autofocus: true,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: "Nome Completo",
-                        labelStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                        prefixIcon: Icon(
-                          Icons.person,
-                          color: Colors.white,
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      validator: (nome) {
-                        if (nome == null || nome.isEmpty) {
-                          return "Digite o seu nome";
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
                       controller: _mailInputController,
                       autofocus: true,
                       style: const TextStyle(color: Colors.white),
                       decoration: const InputDecoration(
-                        labelText: "E-mail",
-                        labelStyle: TextStyle(
-                          color: Colors.white,
-                        ),
-                        prefixIcon: Icon(
-                          Icons.mail_outline,
-                          color: Colors.white,
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
+                          labelText: "E-mail",
+                          labelStyle: TextStyle(
                             color: Colors.white,
                           ),
-                        ),
-                      ),
+                          prefixIcon: Icon(
+                            Icons.mail_outline,
+                            color: Colors.white,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                            color: Colors.white,
+                          ))),
                       validator: (mail) {
                         if (mail == null || mail.isEmpty) {
                           return "Digite o seu e-mail";
@@ -122,10 +99,6 @@ class _SignUpScreenState extends State<SignUpPage> {
                         return null;
                       },
                     ),
-                    const Padding(
-                        padding: EdgeInsets.only(
-                      bottom: 15,
-                    )),
                     TextFormField(
                       controller: _passwordInputController,
                       obscureText: showPassword == false,
@@ -152,36 +125,51 @@ class _SignUpScreenState extends State<SignUpPage> {
                         return null;
                       },
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: showPassword,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              showPassword = newValue!;
-                            });
-                          },
-                          activeColor: Color.fromARGB(255, 126, 87, 194),
-                        ),
-                        const Text(
-                          "Mostrar a Senha",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    )
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _doSignUp();
-                  }
-                },
-                child: const Text("Cadastrar"),
-              )
+              Row(
+                children: [
+                  Checkbox(
+                    value: showPassword,
+                    onChanged: (bool? newValue) {
+                      setState(() {
+                        showPassword = newValue!;
+                      });
+                    },
+                    activeColor: Color.fromARGB(255, 126, 87, 194),
+                  ),
+                  const Text(
+                    "Mostrar a Senha",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _doLogin();
+                    }
+                  },
+                  child: const Text("Login"),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SignUpPage()));
+                  },
+                  child: const Text("Cadastre-se"),
+                ),
+              ),
             ],
           ),
         ),
@@ -189,39 +177,30 @@ class _SignUpScreenState extends State<SignUpPage> {
     );
   }
 
-  void _doSignUp() {
-    User newUser = User(
-        name: _nameInputController.text,
-        mail: _mailInputController.text,
-        password: _passwordInputController.text,
-        keepOn: true);
+  void _doLogin() async {
+    String mailForm = _mailInputController.text;
+    String passwordForm = _passwordInputController.text;
 
-    _saveUser(newUser);
-  }
-
-  void _saveUser(User newUser) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final user = prefs.getString("LOGGIN_USER_INFOS") ?? {};
-    log(user.toString());
-    if (user.toString() == "{}") {
-      prefs.setString("LOGGIN_USER_INFOS", jsonEncode(newUser.toJson()));
-      Navigator.pop(context);
+    User user = await _getSavedUser(mailForm, passwordForm);
+    if (mailForm == user.mail && passwordForm == user.password) {
+      log("LOGIN EFETUADO COM SUCESSO.");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
+      log("FALHA NO LOGIN.");
+
       showAlertDialog1(BuildContext context) {
         // configura o button
         Widget okButton = TextButton(
           child: Text("OK"),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
-            );
+            Navigator.pop(context);
           },
         );
         // configura o  AlertDialog
         AlertDialog alerta = AlertDialog(
-          title: Text("Falha no Cadastro"),
-          content: Text("O sistema já possui um usuário cadastrado."),
+          title: Text("Falha no Login"),
+          content: Text("Usuário inválido! Verifique a senha e o e-mail."),
           actions: [
             okButton,
           ],
@@ -237,5 +216,14 @@ class _SignUpScreenState extends State<SignUpPage> {
 
       showAlertDialog1(context);
     }
+  }
+
+  Future<User> _getSavedUser(mailForm, passwordForm) async {
+    final prefs = await SharedPreferences.getInstance();
+    final jsonUser = prefs.getString("LOGGIN_USER_INFOS") ?? {};
+    log(jsonUser.toString());
+    Map<String, dynamic> mapUser = json.decode(jsonUser.toString());
+    User user = User.fromJson(mapUser);
+    return user;
   }
 }

@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'dart:io';
-import 'package:carteira/documento/providers/documentos_notifier.dart';
+import 'dart:typed_data';
+
+import 'package:carteira/documento/controller/controller.dart';
+import 'package:carteira/documento/model/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../models/documento.dart';
 
 class AddPage extends ConsumerStatefulWidget {
   const AddPage({super.key});
@@ -15,13 +16,11 @@ class AddPage extends ConsumerStatefulWidget {
 }
 
 class _AddPageState extends ConsumerState<AddPage> {
-
   final ImagePicker _picker = ImagePicker();
   Uint8List webImage = Uint8List(8);
   File? selected;
   // ignore: unused_field
   File? _pickedImage;
-
   bool imageAvailable = false;
   bool textoValido = false;
   final tituloController = TextEditingController();
@@ -79,7 +78,8 @@ class _AddPageState extends ConsumerState<AddPage> {
               const SizedBox(height: 20),
               GestureDetector(
                 onTap: () async {
-                  XFile? img = await _picker.pickImage(source: ImageSource.gallery);
+                  XFile? img =
+                      await _picker.pickImage(source: ImageSource.gallery);
                   if (img != null) {
                     var f = await img.readAsBytes();
                     setState(() {
@@ -116,13 +116,21 @@ class _AddPageState extends ConsumerState<AddPage> {
                   foregroundColor: Colors.white,
                 ),
                 onPressed: imageAvailable && textoValido
-                    ? () {
-                        ref.read(documentosNotifierProvider.notifier).addDoc(
-                              Documento(
-                                titulo: tituloController.text,
-                                imagem: base64Encode(webImage),
+                    ? () async {
+                        bool result = await ref
+                            .read(documentoListControllerProvider.notifier)
+                            .addDocumento(Documento(
+                                tituloController.text, base64Encode(webImage)));
+                        if (context.mounted) {
+                          if (!result) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'Documento não adicionado, pois já existe outro com o mesmo nome.'),
                               ),
                             );
+                          }
+                        }
                         Navigator.pop(context);
                       }
                     : null,

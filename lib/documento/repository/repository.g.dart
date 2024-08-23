@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'documentos_notifier.dart';
+part of 'repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$documentosNotifierHash() =>
-    r'91e2701fe7b576a6f16b29089c2a137b4318f48e';
+String _$documentoPreferencesHash() =>
+    r'34139456d6fdd4dea130a397ec653c00dd566cb4';
 
-/// See also [DocumentosNotifier].
-@ProviderFor(DocumentosNotifier)
-final documentosNotifierProvider =
-    AutoDisposeNotifierProvider<DocumentosNotifier, List<Documento>>.internal(
-  DocumentosNotifier.new,
-  name: r'documentosNotifierProvider',
+/// See also [documentoPreferences].
+@ProviderFor(documentoPreferences)
+final documentoPreferencesProvider = Provider<DocumentoPreferences>.internal(
+  documentoPreferences,
+  name: r'documentoPreferencesProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$documentosNotifierHash,
+      : _$documentoPreferencesHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$DocumentosNotifier = AutoDisposeNotifier<List<Documento>>;
+typedef DocumentoPreferencesRef = ProviderRef<DocumentoPreferences>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

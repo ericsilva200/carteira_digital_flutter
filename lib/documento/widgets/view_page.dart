@@ -1,9 +1,8 @@
 import 'dart:convert';
 
+import 'package:carteira/documento/model/domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../models/documento.dart';
 
 class ViewPage extends ConsumerWidget {
   final Documento documento;
