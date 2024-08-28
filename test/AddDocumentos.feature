@@ -1,8 +1,8 @@
 
-Funcionalidade: Adicionar Documentos
+Functionality: Add Documents
 
-  Cenário: Adicionando um documento via foto ou digitalização
-    Dado que estou logado
-    Quando eu tirar uma foto ou digitalizar um documento
-    E eu adicionar o documento ao meu armazenamento
-    Então eu devo ver o documento na minha lista de documentos armazenados
+  Scenario: Adding a document via photo or scan
+    Given that I am logged in
+    When I take a photo or scan a document
+    And I add the document to my storage
+    Then I should see the document in my list of stored documents

@@ -1,7 +1,7 @@
 
-Funcionalidade: Desempenho Otimizado
+Feature: Optimized Performance
 
-  Cenário: Operação suave ao armazenar documentos
-    Dado que eu tenho uma conexão de internet estável
-    Quando eu adicionar, editar ou excluir documentos
-    Então o aplicativo deve realizar essas ações sem lentidão ou erros
+  Scenario: Smooth operation when storing documents
+    Given that I have a stable internet connection
+    When I add, edit, or delete documents
+    Then the application should perform these actions without slowdowns or errors

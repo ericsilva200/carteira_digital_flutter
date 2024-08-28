@@ -1,15 +1,15 @@
 
-Funcionalidade: Registro e Login de Usuário
+Functionality: User Registration and Login
 
-  Cenário: Registrando um novo usuário
-    Dado que estou na página de registro
-    Quando eu inserir meu nome de usuário e senha
-    E eu confirmar meu registro
-    Então eu devo ser redirecionado para a página de login
+  Scenario: Registering a new user
+    Given that I am on the registration page
+    When I enter my username and password
+    And I confirm my registration
+    Then I should be redirected to the login page
 
-  Cenário: Fazendo login com credenciais válidas
-    Dado que estou na página de login
-    Quando eu inserir meu nome de usuário e senha
-    E eu pressionar o botão de login
-    Então eu devo estar logado no aplicativo
-    E eu devo ver meu painel
+  Scenario: Logging in with valid credentials
+    Given that I am on the login page
+    When I enter my username and password
+    And I press the login button
+    So I must be logged into the application
+    And I should see my dashboard

@@ -1,9 +1,9 @@
 
-Funcionalidade: Atualizar Documentos
+Functionality: Update Documents
 
-  Cenário: Substituindo um documento antigo por um novo
-    Dado que eu tenho um documento armazenado
-    Quando eu selecionar o documento para editar
-    E eu tirar uma nova foto ou digitalizar
-    E eu substituir o documento antigo pelo novo
-    Então eu devo ver o novo documento no lugar do antigo na minha lista
+  Scenario: Replacing an old document with a new one
+    Given that I have a document stored
+    When I select the document to edit
+    And I take a new photo or scan
+    And I replace the old document with the new one
+    So I should see the new document in place of the old one in my list

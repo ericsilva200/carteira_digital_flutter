@@ -1,8 +1,8 @@
 
-Funcionalidade: Excluir Documentos
+Functionality: Delete Documents
 
-  Cenário: Excluindo um documento
-    Dado que eu tenho um documento armazenado
-    Quando eu selecionar o documento para excluir
-    E eu confirmar a exclusão
-    Então o documento não deve mais aparecer na minha lista de documentos armazenados
+  Scenario: Deleting a document
+    Given that I have a document stored
+    When I select the document to delete
+    And I confirm the deletion
+    Then the document should no longer appear in my list of stored documents
