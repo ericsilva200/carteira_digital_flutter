@@ -2,21 +2,23 @@ import "dart:convert";
 import "dart:developer";
 
 import "package:carteira/documento/widgets/home_page.dart";
+import "package:carteira/usuario/controller/user_controller.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 import '../model/user_model.dart';
 import "sign_up_page.dart";
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _LoginScreenState createState() => _LoginScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginPage> {
+class _LoginScreenState extends ConsumerState<LoginPage> {
   final TextEditingController _mailInputController = TextEditingController();
   final TextEditingController _passwordInputController =
       TextEditingController();
@@ -181,8 +183,8 @@ class _LoginScreenState extends State<LoginPage> {
     String mailForm = _mailInputController.text;
     String passwordForm = _passwordInputController.text;
 
-    User user = await _getSavedUser(mailForm, passwordForm);
-    if (mailForm == user.mail && passwordForm == user.password) {
+    bool logged = await ref.read(userControllerProvider.notifier).signIn(mailForm, passwordForm);
+    if (logged) {
       log("LOGIN EFETUADO COM SUCESSO.");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const HomePage()));

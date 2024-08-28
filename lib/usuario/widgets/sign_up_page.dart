@@ -1,21 +1,23 @@
 import "dart:convert";
 import "dart:developer";
 
+import "package:carteira/usuario/controller/user_controller.dart";
 import "package:carteira/usuario/widgets/login_page.dart";
 import "package:flutter/material.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
 import "../model/user_model.dart";
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends ConsumerStatefulWidget {
   const SignUpPage({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _SignUpScreenState createState() => _SignUpScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpPage> {
+class _SignUpScreenState extends ConsumerState<SignUpPage> {
   final TextEditingController _nameInputController = TextEditingController();
   final TextEditingController _mailInputController = TextEditingController();
   final TextEditingController _passwordInputController =
@@ -189,22 +191,25 @@ class _SignUpScreenState extends State<SignUpPage> {
     );
   }
 
-  void _doSignUp() {
+  void _doSignUp() async {
     User newUser = User(
         name: _nameInputController.text,
         mail: _mailInputController.text,
         password: _passwordInputController.text,
         keepOn: true);
 
+    
     _saveUser(newUser);
   }
 
   void _saveUser(User newUser) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final user = prefs.getString("LOGGIN_USER_INFOS") ?? {};
-    log(user.toString());
-    if (user.toString() == "{}") {
-      prefs.setString("LOGGIN_USER_INFOS", jsonEncode(newUser.toJson()));
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // final user = prefs.getString("LOGGIN_USER_INFOS") ?? {};
+    //log(user.toString());
+    bool created = await ref.read(userControllerProvider.notifier)
+      .saveUser(newUser);
+
+    if (created) {
       Navigator.pop(context);
     } else {
       showAlertDialog1(BuildContext context) {
