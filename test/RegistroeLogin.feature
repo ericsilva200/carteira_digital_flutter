@@ -1,5 +1,5 @@
 
-Functionality: User Registration and Login
+Feature: User Registration and Login
 
   Scenario: User registration with valid data
     Given I am on the registration screen

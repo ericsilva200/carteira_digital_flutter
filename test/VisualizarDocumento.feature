@@ -1,5 +1,5 @@
 
-Functionality: View Documents
+Feature: View Documents
 
   Scenario: Viewing a document
     Given I am logged in

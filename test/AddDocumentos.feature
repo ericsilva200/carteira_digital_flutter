@@ -1,5 +1,5 @@
 
-Functionality: Add Documents
+Feature: Add Documents
 
   Scenario: Adding a new document via camera
     Given I am logged in

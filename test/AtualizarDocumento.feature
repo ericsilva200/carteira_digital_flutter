@@ -1,5 +1,5 @@
 
-Functionality: Update Documents
+Feature: Update Documents
 
   Scenario: Replacing an old document with a new one
     Given I am logged in

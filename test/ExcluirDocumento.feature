@@ -1,5 +1,5 @@
 
-Functionality: Delete Documents
+Feature: Delete Documents
 
   Scenario: Deleting a document from storage
     Given I am logged in
