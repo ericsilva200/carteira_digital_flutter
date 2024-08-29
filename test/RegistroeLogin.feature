@@ -1,15 +1,38 @@
 
-Functionality: User Registration and Login
+Feature: User Registration and Login
 
-  Scenario: Registering a new user
-    Given that I am on the registration page
-    When I enter my username and password
-    And I confirm my registration
-    Then I should be redirected to the login page
+  Scenario: User registration with valid data
+    Given I am on the registration screen
+    When I enter valid data:
+      | User Name        | Pedro            |
+      | Password         | Password123      |
+    And I tap the {submit} button
+    Then I should see a confirmation message {'Registration successful!'}
+    And I should be redirected to the login screen
 
-  Scenario: Logging in with valid credentials
-    Given that I am on the login page
-    When I enter my username and password
-    And I press the login button
-    So I must be logged into the application
-    And I should see my dashboard
+  Scenario: User registration with an User Name
+    Given I am on the registration screen
+    When I enter registration data:
+      | User Name        | Pedro            |
+      | Password         | Password123      |
+    And the User Name 'Pedro' is already registered
+    And I tap the {submit} button
+    Then I should see an error message {'User Name already registered'}
+    And I should remain on the registration screen
+
+  Scenario: User login with correct credentials
+    Given I am on the login screen
+    When I enter login credentials:
+      | User Name        | Pedro           |
+      | Password         | Password123     |
+    And I tap the {login} button
+    Then I should be logged in successfully
+
+  Scenario: User login with incorrect credentials
+    Given I am on the login screen
+    When I enter login credentials:
+      | User Name        | Pedro           |
+      | Password         | Password123     |
+    And I tap the {login} button
+    Then I should see an error message {'Invalid email or password'}
+    And I should remain on the login screen
