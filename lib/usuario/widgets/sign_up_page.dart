@@ -1,11 +1,7 @@
-import "dart:convert";
-import "dart:developer";
-
 import "package:carteira/usuario/controller/user_controller.dart";
 import "package:carteira/usuario/widgets/login_page.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
 import "../model/user_model.dart";
 
@@ -198,16 +194,12 @@ class _SignUpScreenState extends ConsumerState<SignUpPage> {
         password: _passwordInputController.text,
         keepOn: true);
 
-    
     _saveUser(newUser);
   }
 
   void _saveUser(User newUser) async {
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // final user = prefs.getString("LOGGIN_USER_INFOS") ?? {};
-    //log(user.toString());
-    bool created = await ref.read(userControllerProvider.notifier)
-      .saveUser(newUser);
+    bool created =
+        await ref.read(userControllerProvider.notifier).saveUser(newUser);
 
     if (created) {
       Navigator.pop(context);

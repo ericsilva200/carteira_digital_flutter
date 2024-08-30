@@ -1,13 +1,10 @@
-import "dart:convert";
 import "dart:developer";
 
 import "package:carteira/documento/widgets/home_page.dart";
 import "package:carteira/usuario/controller/user_controller.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
-import "package:shared_preferences/shared_preferences.dart";
 
-import '../model/user_model.dart';
 import "sign_up_page.dart";
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -183,7 +180,9 @@ class _LoginScreenState extends ConsumerState<LoginPage> {
     String mailForm = _mailInputController.text;
     String passwordForm = _passwordInputController.text;
 
-    bool logged = await ref.read(userControllerProvider.notifier).signIn(mailForm, passwordForm);
+    bool logged = await ref
+        .read(userControllerProvider.notifier)
+        .signIn(mailForm, passwordForm);
     if (logged) {
       log("LOGIN EFETUADO COM SUCESSO.");
       Navigator.push(
@@ -218,14 +217,5 @@ class _LoginScreenState extends ConsumerState<LoginPage> {
 
       showAlertDialog1(context);
     }
-  }
-
-  Future<User> _getSavedUser(mailForm, passwordForm) async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsonUser = prefs.getString("LOGGIN_USER_INFOS") ?? {};
-    log(jsonUser.toString());
-    Map<String, dynamic> mapUser = json.decode(jsonUser.toString());
-    User user = User.fromJson(mapUser);
-    return user;
   }
 }
