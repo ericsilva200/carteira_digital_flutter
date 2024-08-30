@@ -1,15 +1,38 @@
 
-Funcionalidade: Registro e Login de Usuário
+Feature: User Registration and Login
 
-  Cenário: Registrando um novo usuário
-    Dado que estou na página de registro
-    Quando eu inserir meu nome de usuário e senha
-    E eu confirmar meu registro
-    Então eu devo ser redirecionado para a página de login
+  Scenario: User registration with valid data
+    Given I am on the registration screen
+    When I enter valid data:
+      | User Name        | Pedro            |
+      | Password         | Password123      |
+    And I tap the {submit} button
+    Then I should see a confirmation message {'Registration successful!'}
+    And I should be redirected to the login screen
 
-  Cenário: Fazendo login com credenciais válidas
-    Dado que estou na página de login
-    Quando eu inserir meu nome de usuário e senha
-    E eu pressionar o botão de login
-    Então eu devo estar logado no aplicativo
-    E eu devo ver meu painel
+  Scenario: User registration with an User Name
+    Given I am on the registration screen
+    When I enter registration data:
+      | User Name        | Pedro            |
+      | Password         | Password123      |
+    And the User Name 'Pedro' is already registered
+    And I tap the {submit} button
+    Then I should see an error message {'User Name already registered'}
+    And I should remain on the registration screen
+
+  Scenario: User login with correct credentials
+    Given I am on the login screen
+    When I enter login credentials:
+      | User Name        | Pedro           |
+      | Password         | Password123     |
+    And I tap the {login} button
+    Then I should be logged in successfully
+
+  Scenario: User login with incorrect credentials
+    Given I am on the login screen
+    When I enter login credentials:
+      | User Name        | Pedro           |
+      | Password         | Password123     |
+    And I tap the {login} button
+    Then I should see an error message {'Invalid email or password'}
+    And I should remain on the login screen
