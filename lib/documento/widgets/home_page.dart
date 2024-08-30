@@ -1,3 +1,4 @@
+import 'package:carteira/categoria/widgets/categoria_dropdown.dart';
 import 'package:carteira/documento/controller/controller.dart';
 import 'package:carteira/documento/widgets/add_page.dart';
 import 'package:carteira/documento/widgets/edit_page.dart';
@@ -26,12 +27,12 @@ class HomePage extends ConsumerWidget {
       body: Center(
         child: Container(
           width: 500,
-          margin: const EdgeInsets.all(20),
+          margin: const EdgeInsets.all(0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: 0),
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.only(top: 20, left: 40, right: 40),
@@ -70,7 +71,10 @@ class DocumentoListWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final documentoList = ref.watch(documentoListControllerProvider);
-    return documentoList.when(
+    return Column(
+      children: [
+        CategoriaDropdown(),
+        documentoList.when(
       data: (l) => l.isEmpty
           ? const Center(
               child: Text('Nenhum documento cadastrado.'),
@@ -134,6 +138,8 @@ class DocumentoListWidget extends ConsumerWidget {
             ),
       error: (o, s) => Text('Error: $o'),
       loading: () => const CircularProgressIndicator(),
+    )
+      ],
     );
   }
 }

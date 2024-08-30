@@ -7,7 +7,7 @@ part of 'controller.dart';
 // **************************************************************************
 
 String _$documentoListControllerHash() =>
-    r'8fb175b8cddf24290a6ee7094e2c03478ffc6c08';
+    r'caf8796a1c629b9211fc5f3e2800710e92e6636b';
 
 /// See also [DocumentoListController].
 @ProviderFor(DocumentoListController)

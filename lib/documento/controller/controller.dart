@@ -1,4 +1,5 @@
 import 'package:carteira/documento/model/domain.dart';
+import 'package:carteira/usuario/service/user_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../service/service.dart';
 
@@ -11,8 +12,13 @@ class DocumentoListController extends _$DocumentoListController {
     return ref.read(documentoListServiceProvider).documentos;
   }
 
-  Future<bool> addDocumento(Documento documento) async {
+  Future<bool> addDocumento(String titulo, String imagem) async {
     state = const AsyncValue.loading();
+    
+    final userService = ref.read(userServiceProvider);
+    var user = await userService.loggedUser;
+
+    var documento = Documento(user.id, null, titulo, imagem);
 
     final documentoService = ref.read(documentoListServiceProvider);
     try {

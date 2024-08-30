@@ -119,8 +119,8 @@ class _AddPageState extends ConsumerState<AddPage> {
                     ? () async {
                         bool result = await ref
                             .read(documentoListControllerProvider.notifier)
-                            .addDocumento(Documento(
-                                tituloController.text, base64Encode(webImage)));
+                            .addDocumento(
+                                tituloController.text, base64Encode(webImage));
                         if (context.mounted) {
                           if (!result) {
                             ScaffoldMessenger.of(context).showSnackBar(
