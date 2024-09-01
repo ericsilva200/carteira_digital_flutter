@@ -1,5 +1,9 @@
+import 'dart:developer';
+
+import 'package:carteira/categoria/controller/categoria_controller.dart';
 import 'package:carteira/categoria/widgets/categoria_dropdown.dart';
 import 'package:carteira/documento/controller/controller.dart';
+import 'package:carteira/documento/model/domain.dart';
 import 'package:carteira/documento/widgets/add_page.dart';
 import 'package:carteira/documento/widgets/edit_page.dart';
 import 'package:carteira/documento/widgets/view_page.dart';
@@ -49,6 +53,7 @@ class HomePage extends ConsumerWidget {
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(25)),
                   onPressed: () async {
+                    ref.read(categoriaControllerProvider.notifier).resetCategoriaSelected();
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const AddPage()),
@@ -65,22 +70,57 @@ class HomePage extends ConsumerWidget {
   }
 }
 
-class DocumentoListWidget extends ConsumerWidget {
+class DocumentoListWidget extends ConsumerStatefulWidget {
   const DocumentoListWidget({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final documentoList = ref.watch(documentoListControllerProvider);
-    return Column(
-      children: [
-        CategoriaDropdown(),
-        documentoList.when(
-      data: (l) => l.isEmpty
-          ? const Center(
+  ConsumerState<ConsumerStatefulWidget> createState() => _DocumentoListWidgetState();
+}
+
+class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
+
+  String categoriaSelected = "all";
+
+   fetchCategoriaSelected() {
+     ref.watch(categoriaControllerProvider.notifier).getSelectedCategoria().then((newValue) {
+      log(newValue!);
+      if(categoriaSelected != newValue) {
+        log(newValue!);
+        setState(() {
+         categoriaSelected = newValue!;
+        });
+      }
+      
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    fetchCategoriaSelected();
+    var documentoList = ref.watch(documentoListControllerProvider.notifier).getFilteredDocumentos(categoriaSelected);
+
+   return Column(
+    children: [
+      CategoriaDropdown(),
+      FutureBuilder<List<Documento>>(
+        future: documentoList,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            
+            return Text('Error: ${snapshot.error}');
+          } else if (!snapshot.hasData ||snapshot.data!.isEmpty) {
+            
+            return const Center(
               child: Text('Nenhum documento cadastrado.'),
-            )
-          : ListView.separated(
-              itemCount: l.length,
+            );
+          } else if (snapshot.hasData) {
+            
+            final documentos = snapshot.data!;
+            return ListView.separated(
+              itemCount: documentos.length,
               shrinkWrap: true,
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
@@ -91,7 +131,7 @@ class DocumentoListWidget extends ConsumerWidget {
                     children: [
                       TextButton(
                         child: Text(
-                          l[index].titulo,
+                          documentos[index].titulo,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -101,7 +141,7 @@ class DocumentoListWidget extends ConsumerWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    ViewPage(documento: l[index])),
+                                    ViewPage(documento: documentos[index])),
                           );
                         },
                       ),
@@ -113,7 +153,7 @@ class DocumentoListWidget extends ConsumerWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditPage(
-                                    documento: l[index],
+                                    documento: documentos[index],
                                   ),
                                 ),
                               );
@@ -125,7 +165,7 @@ class DocumentoListWidget extends ConsumerWidget {
                               ref
                                   .read(
                                       documentoListControllerProvider.notifier)
-                                  .removeDocumento(l[index]);
+                                  .removeDocumento(documentos[index]);
                             },
                             child: const Icon(Icons.delete, size: 20),
                           ),
@@ -135,11 +175,14 @@ class DocumentoListWidget extends ConsumerWidget {
                   ),
                 );
               },
-            ),
-      error: (o, s) => Text('Error: $o'),
-      loading: () => const CircularProgressIndicator(),
-    )
-      ],
-    );
+            );
+          } else {
+            
+            return const SizedBox.shrink();
+          }
+        },
+      ),
+    ],
+  );
   }
 }

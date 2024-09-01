@@ -61,6 +61,16 @@ class CategoriaPreferences {
     }
     return Future.value(false);
   }
+
+  Future<void> selectCategoria(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('categoria_selected', id);
+  }
+
+  Future<String?> getSelectedCategoria() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('categoria_selected');
+  }
 }
 
 @Riverpod(keepAlive: true)

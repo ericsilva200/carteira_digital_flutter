@@ -34,7 +34,13 @@ class CategoriaService {
     return categoriaPref.delete(id);
   }
 
-  
+  Future<void> selectCategoria(String id) {
+    return categoriaPref.selectCategoria(id);
+  }
+
+  Future<String?> getSelectedCategoria() {
+    return categoriaPref.getSelectedCategoria();
+  }
 
 }
 

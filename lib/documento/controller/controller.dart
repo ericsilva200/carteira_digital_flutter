@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:carteira/categoria/service/categoria_service.dart';
 import 'package:carteira/documento/model/domain.dart';
 import 'package:carteira/usuario/service/user_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -9,16 +12,27 @@ part 'controller.g.dart';
 class DocumentoListController extends _$DocumentoListController {
   @override
   Future<List<Documento>> build() async {
-    return ref.read(documentoListServiceProvider).documentos;
+    return await ref.watch(documentoListServiceProvider).documentos;
+  }
+
+  Future<List<Documento>> getFilteredDocumentos(String categoriaId) async {
+
+    var documentos = await ref.watch(documentoListServiceProvider).documentos;
+    var dto = documentos.where((doc) => doc.categoriaId == categoriaId).toList();
+    log(dto.toString());
+    return dto;
   }
 
   Future<bool> addDocumento(String titulo, String imagem) async {
     state = const AsyncValue.loading();
     
     final userService = ref.read(userServiceProvider);
+    final categoriaService = ref.read(categoriaServiceProvider);
+    
+    var categoriaSelected = await categoriaService.getSelectedCategoria();
     var user = await userService.loggedUser;
 
-    var documento = Documento(user.id, null, titulo, imagem);
+    var documento = Documento(user.id, categoriaSelected, titulo, imagem);
 
     final documentoService = ref.read(documentoListServiceProvider);
     try {

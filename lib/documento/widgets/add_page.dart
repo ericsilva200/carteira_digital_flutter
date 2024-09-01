@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:carteira/categoria/widgets/categoria_dropdown.dart';
 import 'package:carteira/documento/controller/controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +48,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                     )
                   : const SizedBox(),
               const SizedBox(height: 20),
+              CategoriaDropdown(),
               SizedBox(
                 width: 250,
                 height: 40,

@@ -14,10 +14,32 @@ class CategoriaDropdown extends ConsumerStatefulWidget {
 
 class _CategoriaDropdownState extends ConsumerState<CategoriaDropdown> {
   String selectedValue = "all";
+  late List<Categoria> categorias;
+
+
+  void updateCategoria() {
+    ref.watch(categoriaControllerProvider.notifier).findAll().then((onValue) {
+      setState(() {
+        categorias = [...onValue];
+      });
+    });
+  } 
+
+  void updateSelectedCategoria() {
+    ref.watch(categoriaControllerProvider.notifier).getSelectedCategoria().then((onValue) {
+      setState(() {
+        selectedValue = onValue!;
+      });
+    });
+  }
+
+
+
+  void _handleSelectCategoria(String categoriaId) {
+    ref.read(categoriaControllerProvider.notifier).selectCategoria(categoriaId);
+  }
 
   Future<List<DropdownMenuItem<String>>> get dropdownItems async {
-    List<Categoria> categorias =
-        await ref.watch(categoriaControllerProvider.notifier).findAll();
 
     List<DropdownMenuItem<String>> menuItems = categorias
         .map((categ) =>
@@ -29,6 +51,10 @@ class _CategoriaDropdownState extends ConsumerState<CategoriaDropdown> {
 
   @override
   Widget build(BuildContext context) {
+
+    updateCategoria();
+    updateSelectedCategoria();
+
     return Column(
       children: [
         Text("Categorias"),
@@ -42,14 +68,12 @@ class _CategoriaDropdownState extends ConsumerState<CategoriaDropdown> {
                   return DropdownButton<String>(
                       value: selectedValue,
                       onChanged: (newValue) {
-                        setState(() {
-                          selectedValue = newValue!;
-                        });
+                        _handleSelectCategoria(newValue!);
                       },
                       items: snapshot.data);
                 }),
-            SizedBox(width: 12.0),
-            AddCategoria()
+            SizedBox(width: 4.0),
+            AddCategoria(reloadCategorias: (){})
           ],
         )
       ],

@@ -10,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class AddCategoria extends ConsumerWidget {
-  const AddCategoria({super.key});
+  final Function reloadCategorias;
+  const AddCategoria({super.key, required this.reloadCategorias});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,9 +21,9 @@ class AddCategoria extends ConsumerWidget {
       },
       style: ElevatedButton.styleFrom(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(4.0),
               ),
-              padding: EdgeInsets.fromLTRB(0, 16, 0, 16),
+              padding: EdgeInsets.fromLTRB(0, 4, 0, 4),
       ),
       child: const Icon(Icons.add),
     );
@@ -45,7 +46,7 @@ class AddCategoria extends ConsumerWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o modal sem salvar
+                Navigator.of(context).pop(); 
               },
               child: Text('Cancelar'),
             ),
@@ -53,9 +54,9 @@ class AddCategoria extends ConsumerWidget {
               onPressed: () {
                 String categoryName = _categoryController.text;
                 if (categoryName.isNotEmpty) {
-                  // Função que faz algo com o nome da categoria
+                  
                   _createCategory(categoryName, ref);
-                  Navigator.of(context).pop(); // Fecha o modal após salvar
+                  Navigator.of(context).pop(); 
                 }
               },
               child: Text('Criar'),
@@ -68,9 +69,6 @@ class AddCategoria extends ConsumerWidget {
 
   void _createCategory(String categoria, ref) async {
     var created = await ref.read(categoriaControllerProvider.notifier).save(categoria);
-    var list = await ref.read(categoriaControllerProvider.notifier).findAll();
-    log("CREATED ?? ${created}");
-    log("list ?? ${list.length}");
   }
 
   
