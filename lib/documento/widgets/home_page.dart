@@ -102,71 +102,73 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
    return Column(
       children: [
         CategoriaDropdown(),
-        documentoList.when(
-      data: (l) => l.isEmpty
-          ? const Center(
-              child: Text('Nenhum documento cadastrado.'),
-            )
-          : ListView.separated(
-              itemCount: l.length,
-              shrinkWrap: true,
-              separatorBuilder: (context, index) => const Divider(),
-              itemBuilder: (context, index) {
-                return Container(
-                  height: 40,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        child: Text(
-                          l[index].titulo,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
+        Expanded(
+          child: documentoList.when(
+                data: (l) => l.isEmpty
+            ? const Center(
+                child: Text('Nenhum documento cadastrado.'),
+              )
+            : ListView.separated(
+                itemCount: l.length,
+                shrinkWrap: true,
+                separatorBuilder: (context, index) => const Divider(),
+                itemBuilder: (context, index) {
+                  return Container(
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Text(
+                            l[index].titulo,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewPage(documento: l[index])),
+                            );
+                          },
                         ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewPage(documento: l[index])),
-                          );
-                        },
-                      ),
-                      Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditPage(
-                                    documento: l[index],
+                        Row(
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditPage(
+                                      documento: l[index],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                            child: const Icon(Icons.edit, size: 20),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              ref
-                                  .read(
-                                      documentoListControllerProvider.notifier)
-                                  .removeDocumento(l[index]);
-                            },
-                            child: const Icon(Icons.delete, size: 20),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-      error: (o, s) => Text('Error: $o'),
-      loading: () => const CircularProgressIndicator(),
-    )
+                                );
+                              },
+                              child: const Icon(Icons.edit, size: 20),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                ref
+                                    .read(
+                                        documentoListControllerProvider.notifier)
+                                    .removeDocumento(l[index]);
+                              },
+                              child: const Icon(Icons.delete, size: 20),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+                error: (o, s) => Text('Error: $o'),
+                loading: () => const CircularProgressIndicator(),
+              ),
+        )
       ],
     );
   }

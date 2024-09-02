@@ -42,13 +42,12 @@ class _AddPageState extends ConsumerState<AddPage> {
             children: [
               imageAvailable
                   ? SizedBox(
-                      width: 500,
-                      height: 300,
+                      width: 350,
+                      height: 210,
                       child: Image.memory(webImage),
                     )
                   : const SizedBox(),
               const SizedBox(height: 20),
-              CategoriaDropdown(),
               SizedBox(
                 width: 250,
                 height: 40,
