@@ -83,9 +83,9 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
 
    fetchCategoriaSelected() {
      ref.watch(categoriaControllerProvider.notifier).getSelectedCategoria().then((newValue) {
-      log(newValue!);
+      
       if(categoriaSelected != newValue) {
-        log(newValue!);
+        
         setState(() {
          categoriaSelected = newValue!;
         });
@@ -97,30 +97,18 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
   @override
   Widget build(BuildContext context) {
     fetchCategoriaSelected();
-    var documentoList = ref.watch(documentoListControllerProvider.notifier).getFilteredDocumentos(categoriaSelected);
+    var documentoList = ref.watch(documentoListControllerProvider);
 
    return Column(
-    children: [
-      CategoriaDropdown(),
-      FutureBuilder<List<Documento>>(
-        future: documentoList,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            
-            return Text('Error: ${snapshot.error}');
-          } else if (!snapshot.hasData ||snapshot.data!.isEmpty) {
-            
-            return const Center(
+      children: [
+        CategoriaDropdown(),
+        documentoList.when(
+      data: (l) => l.isEmpty
+          ? const Center(
               child: Text('Nenhum documento cadastrado.'),
-            );
-          } else if (snapshot.hasData) {
-            
-            final documentos = snapshot.data!;
-            return ListView.separated(
-              itemCount: documentos.length,
+            )
+          : ListView.separated(
+              itemCount: l.length,
               shrinkWrap: true,
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (context, index) {
@@ -131,7 +119,7 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
                     children: [
                       TextButton(
                         child: Text(
-                          documentos[index].titulo,
+                          l[index].titulo,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -141,7 +129,7 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    ViewPage(documento: documentos[index])),
+                                    ViewPage(documento: l[index])),
                           );
                         },
                       ),
@@ -153,7 +141,7 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => EditPage(
-                                    documento: documentos[index],
+                                    documento: l[index],
                                   ),
                                 ),
                               );
@@ -165,7 +153,7 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
                               ref
                                   .read(
                                       documentoListControllerProvider.notifier)
-                                  .removeDocumento(documentos[index]);
+                                  .removeDocumento(l[index]);
                             },
                             child: const Icon(Icons.delete, size: 20),
                           ),
@@ -175,14 +163,11 @@ class _DocumentoListWidgetState extends ConsumerState<DocumentoListWidget> {
                   ),
                 );
               },
-            );
-          } else {
-            
-            return const SizedBox.shrink();
-          }
-        },
-      ),
-    ],
-  );
+            ),
+      error: (o, s) => Text('Error: $o'),
+      loading: () => const CircularProgressIndicator(),
+    )
+      ],
+    );
   }
 }

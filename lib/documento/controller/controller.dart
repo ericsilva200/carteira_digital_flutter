@@ -12,14 +12,17 @@ part 'controller.g.dart';
 class DocumentoListController extends _$DocumentoListController {
   @override
   Future<List<Documento>> build() async {
-    return await ref.watch(documentoListServiceProvider).documentos;
+    final categoriaSelecionada = await ref.watch(categoriaServiceProvider).getSelectedCategoria();
+    final documentos = await ref.watch(documentoListServiceProvider).documentos;
+
+    return documentos.where((doc) => doc.categoriaId == categoriaSelecionada).toList();
   }
 
   Future<List<Documento>> getFilteredDocumentos(String categoriaId) async {
 
     var documentos = await ref.watch(documentoListServiceProvider).documentos;
     var dto = documentos.where((doc) => doc.categoriaId == categoriaId).toList();
-    log(dto.toString());
+    
     return dto;
   }
 
